@@ -5,13 +5,14 @@ import os
 app = Flask(__name__, static_folder='../frontend', static_url_path='')
 CORS(app)
 
+# Simple in-memory user store (this will reset every time the server restarts)
 users = {
-    "user": {"password": "user123", "role": "user"},
-    "admin": {"password": "admin123", "role": "admin"}
+    "rajesh01": "demopassword",
+    "admin": "admin123"
 }
 
 @app.route('/')
-def serve_index():
+def home():
     return send_from_directory(app.static_folder, 'index.html')
 
 @app.route('/login', methods=['POST'])
@@ -20,43 +21,31 @@ def login():
     username = data.get("username")
     password = data.get("password")
 
-    user = users.get(username)
-    if user and user["password"] == password:
-        # Generate correct token based on role
-        role = user["role"]
-        token = f"{role}_token_123"  # e.g., user_token_123 or admin_token_123
+    if username in users and users[username] == password:
+        return jsonify({"success": True, "message": "Login successful", "redirect": "/dashboard.html", "token": "token123"})
+    return jsonify({"success": False, "message": "Invalid credentials"})
 
-        return jsonify({
-            "success": True,
-            "token": token,
-            "redirect": "/dashboard.html"
-        })
-    else:
-        return jsonify({
-            "success": False,
-            "message": "Invalid credentials"
-        })
+@app.route('/forgot-password', methods=['POST'])
+def forgot_password():
+    username = request.json.get("username")
+    if username in users:
+        link = f"/reset-password.html?username={username}"  # Insecure and guessable
+        return jsonify({"link": link})
+    return jsonify({"error": "User not found"}), 404
 
+@app.route('/reset-password', methods=['POST'])
+def reset_password():
+    data = request.json
+    username = data.get("username")
+    newpass = data.get("password")
+    if username in users:
+        users[username] = newpass
+        return jsonify({"status": f"Password updated for {username}"})
+    return jsonify({"error": "Invalid user"}), 400
 
-    user = users.get(username)
-    if user and user["password"] == password:
-        token = f"{user['role']}_token_123"
-        return jsonify({"success": True, "token": token, "redirect": "/dashboard.html"})
-    else:
-        return jsonify({"success": False, "message": "Invalid credentials"})
-
-@app.route('/check-admin', methods=['POST'])
-def check_admin():
-    token = request.json.get("token")
-    if token == "admin_token_123":
-        return jsonify({"access": "granted", "redirect": "/admin.html"})
-    return jsonify({"access": "denied"})
-
-# ❌ REMOVE THIS CONFLICTING ROUTE
-# @app.route('/<path:filename>')
-# def serve_static_file(filename):
-#     return send_from_directory(app.static_folder, filename)
+@app.route('/<path:path>')
+def static_files(path):
+    return send_from_directory(app.static_folder, path)
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)), debug=True)
-
+    app.run(debug=True)
