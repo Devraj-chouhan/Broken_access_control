@@ -58,4 +58,5 @@ def check_admin():
 #     return send_from_directory(app.static_folder, filename)
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)), debug=True)
+
