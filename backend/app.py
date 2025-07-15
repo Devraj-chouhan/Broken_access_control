@@ -27,9 +27,13 @@ def login():
         return jsonify({"success": True, "token": token, "redirect": redirect_url})
     return jsonify({"success": False, "message": "Invalid credentials"})
 
-@app.route('/admin', methods=['GET'])
-def admin_panel():
-    return jsonify({"message": "Welcome to the admin panel"})
+@app.route('/check-admin', methods=['POST'])
+def check_admin():
+    token = request.json.get("token")
+    if token == "admin_token_123":
+        return jsonify({"access": "granted", "redirect": "/admin.html"})
+    return jsonify({"access": "denied"})
+
 
 @app.route('/<path:filename>')
 def static_files(filename):
