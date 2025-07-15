@@ -5,7 +5,7 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="login-container"> 
+  <div class="login-container">
     <h2>Welcome, <span id="user"></span> 👤</h2>
     <p>You are logged in as a <strong>regular user</strong>.</p>
     <ul style="text-align: left;">
@@ -13,9 +13,8 @@
       <li>📧 Access your inbox</li>
       <li>⚙️ Modify your settings</li>
     </ul>
-    <br>
-    
   </div>
+
   <script>
     const username = localStorage.getItem("username");
     document.getElementById("user").innerText = username;
