@@ -8,13 +8,13 @@
   <div class="login-container">
     <h2>🚨 Admin Panel</h2>
     <div id="admin-content">
-      <p>Secret System Logs:</p>
+      <p>Confidential Logs:</p>
       <ul style="text-align: left;">
-        <li>🔐 Admin-only server access reports</li>
-        <li>🧾 User audit logs</li>
-        <li>📊 Analytics and system usage data</li>
+        <li>🔐 Server access reports</li>
+        <li>🧾 Audit logs</li>
+        <li>📊 Usage analytics</li>
       </ul>
-      <p style="color: red;">⚠️ WARNING: CONFIDENTIAL DATA</p>
+      <p style="color: red;">⚠️ Sensitive Admin Data</p>
     </div>
   </div>
 
@@ -22,7 +22,7 @@
     fetch("https://broken-access-control.onrender.com/admin")
       .then(res => res.json())
       .then(data => {
-        console.log("Backend message:", data.message);
+        console.log("Backend says:", data.message);
       });
   </script>
 </body>

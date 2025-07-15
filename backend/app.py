@@ -23,12 +23,13 @@ def login():
     user = users.get(username)
     if user and user["password"] == password:
         token = f"{user['role']}_token_123"
-        return jsonify({"success": True, "token": token, "redirect": "/dashboard.html"})
+        redirect_url = "/admin.html" if user["role"] == "admin" else "/dashboard.html"
+        return jsonify({"success": True, "token": token, "redirect": redirect_url})
     return jsonify({"success": False, "message": "Invalid credentials"})
 
 @app.route('/admin', methods=['GET'])
 def admin_panel():
-    return jsonify({"message": "Hello Admin, welcome to the secure admin panel!"})
+    return jsonify({"message": "Welcome to the admin panel"})
 
 @app.route('/<path:filename>')
 def static_files(filename):
